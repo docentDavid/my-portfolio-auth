@@ -2,18 +2,17 @@ import { createServer } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Project } from "@/lib/types";
 import Image from "next/image";
+import { PostgrestError } from "@supabase/supabase-js";
 
 export default async function HomePage() {
   const supabase = await createServer();
 
-  const { data: projects, error } = (await supabase
+  const { data: projects, error } = await supabase
     .from("projects")
     .select("*")
     .eq("is_hidden", false)
-    .order("created_at", { ascending: false })) as {
-    data: Project[] | null;
-    error: any;
-  };
+    .order("created_at", { ascending: false })
+    .returns<Project[]>();
 
   if (error) console.error(error);
 

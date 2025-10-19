@@ -7,8 +7,6 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string; message?: string }>;
 }) {
   const params = await searchParams;
-  const error = params.error;
-  const message = params.message;
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center px-4">
@@ -23,6 +21,26 @@ export default async function LoginPage({
         </div>
 
         <div className="bg-white dark:bg-zinc-900 shadow-lg rounded-lg p-8 border border-zinc-200 dark:border-zinc-800">
+          {params.error && (
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
+              <p className="text-sm text-red-800 dark:text-red-200">
+                {params.error === "invalid_credentials"
+                  ? "Invalid email or password. Please try again."
+                  : "An error occurred. Please try again."}
+              </p>
+            </div>
+          )}
+
+          {params.message && (
+            <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded">
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                {params.message === "check_email"
+                  ? "Check your email for a confirmation link."
+                  : params.message}
+              </p>
+            </div>
+          )}
+
           <form action={login} className="space-y-6">
             <div>
               <label

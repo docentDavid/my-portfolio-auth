@@ -12,11 +12,11 @@ export default async function ProjectPage({
   const { slug } = await params;
   const supabase = await createServer();
 
-  const { data: project, error } = (await supabase
+  const { data: project, error } = await supabase
     .from("projects")
     .select("*")
     .eq("slug", slug)
-    .single()) as { data: Project | null; error: any };
+    .single<Project>();
 
   if (error || !project) {
     notFound();
