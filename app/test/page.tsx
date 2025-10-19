@@ -1,5 +1,6 @@
 import { createServer } from "@/lib/supabase/server";
 import { Project } from "@/lib/types";
+import { PostgrestError } from "@supabase/supabase-js";
 
 export default async function TestPage() {
   const supabase = await createServer();
@@ -10,9 +11,10 @@ export default async function TestPage() {
     .select("count");
 
   // Test 2: Get all projects
-  const { data: projects, error: projectsError } = (await supabase
+  const { data: projects, error: projectsError } = await supabase
     .from("projects")
-    .select("*")) as { data: Project[] | null; error: any };
+    .select("*")
+    .returns<Project[]>();
 
   // Test 3: Check environment variables
   const envCheck = {
