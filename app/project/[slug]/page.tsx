@@ -1,6 +1,7 @@
 import { createServer } from "@/lib/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Project } from "@/lib/types";
 
 export default async function ProjectPage({
   params,
@@ -10,11 +11,11 @@ export default async function ProjectPage({
   const { slug } = await params;
   const supabase = await createServer();
 
-  const { data: project, error } = await supabase
+  const { data: project, error } = (await supabase
     .from("projects")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .single()) as { data: Project | null; error: any };
 
   if (error || !project) {
     notFound();
@@ -84,11 +85,14 @@ export default async function ProjectPage({
 
             <div className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
               <time dateTime={project.created_at}>
-                {new Date(project.created_at).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                This project was finished on:{" "}
+                <span className="text-zinc-900 dark:text-zinc-100">
+                  {new Date(project.created_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
               </time>
             </div>
           </header>

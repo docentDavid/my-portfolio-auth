@@ -3,20 +3,7 @@
 import { createServer } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-export type Project = {
-  id: string;
-  slug: string;
-  title: string;
-  summary: string | null;
-  content: string | null;
-  tags: string[] | null;
-  cover_url: string | null;
-  is_hidden: boolean;
-  order_index: number;
-  created_at: string;
-  updated_at: string;
-};
+import { Project } from "@/lib/types";
 
 // Helper to generate slug from title
 function generateSlug(title: string): string {
@@ -29,6 +16,15 @@ function generateSlug(title: string): string {
 // CREATE
 export async function createProject(formData: FormData) {
   const supabase = await createServer();
+
+  // Check authentication
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+  if (authError || !user) {
+    throw new Error("Unauthorized");
+  }
 
   const title = formData.get("title") as string;
   const summary = formData.get("summary") as string;
@@ -155,8 +151,7 @@ export async function getAllProjects(): Promise<Project[]> {
   const { data, error } = await supabase
     .from("projects")
     .select("*")
-    // .order('order_index', { ascending: true })
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error("Fetch error:", error);

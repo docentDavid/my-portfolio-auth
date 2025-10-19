@@ -5,9 +5,10 @@ import {
   deleteProject,
   toggleHidden,
 } from "@/app/actions/projects";
+import { Project } from "@/lib/types";
 
 export default async function AdminPage() {
-  const projects = await getAllProjects();
+  const projects: Project[] = await getAllProjects();
 
   return (
     <div className="px-4 sm:px-0">

@@ -1,15 +1,18 @@
 import { createServer } from "@/lib/supabase/server";
 import Link from "next/link";
+import { Project } from "@/lib/types";
 
 export default async function HomePage() {
   const supabase = await createServer();
 
-  const { data: projects, error } = await supabase
+  const { data: projects, error } = (await supabase
     .from("projects")
     .select("*")
     .eq("is_hidden", false)
-    .order("order_index", { ascending: true })
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })) as {
+    data: Project[] | null;
+    error: any;
+  };
 
   if (error) console.error(error);
 
