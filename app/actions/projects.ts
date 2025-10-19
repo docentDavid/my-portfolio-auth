@@ -43,7 +43,7 @@ export async function createProject(formData: FormData) {
 
   const slug = generateSlug(title);
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("projects")
     .insert({
       title,
